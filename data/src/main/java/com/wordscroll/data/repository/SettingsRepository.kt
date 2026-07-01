@@ -1,17 +1,15 @@
 package com.wordscroll.data.repository
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.wordscroll.core.settings.AppLanguage
 import com.wordscroll.core.settings.ThemeConfig
 import com.wordscroll.core.settings.ThemePresets
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.wordscroll.data.di.SettingsDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -19,14 +17,12 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore("wordscroll_settings")
-
 /** Every locally-stored image path a theme may reference (background, companion, ...). */
 private fun ThemeConfig.imagePaths(): List<String> = listOfNotNull(customBackgroundPath, companionImagePath)
 
 @Singleton
 class SettingsRepository @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @SettingsDataStore private val dataStore: DataStore<Preferences>,
     private val gson: Gson
 ) {
     private val languageKey = stringPreferencesKey("language_tag")
@@ -34,33 +30,33 @@ class SettingsRepository @Inject constructor(
     private val customThemesKey = stringPreferencesKey("custom_themes")
     private val customType = object : TypeToken<List<ThemeConfig>>() {}.type
 
-    val language: Flow<AppLanguage> = context.settingsDataStore.data.map {
+    val language: Flow<AppLanguage> = dataStore.data.map {
         AppLanguage.fromTag(it[languageKey])
     }
 
-    val customThemes: Flow<List<ThemeConfig>> = context.settingsDataStore.data.map {
+    val customThemes: Flow<List<ThemeConfig>> = dataStore.data.map {
         decode(it[customThemesKey])
     }
 
     val allThemes: Flow<List<ThemeConfig>> = customThemes.map { ThemePresets.all + it }
 
-    val selectedTheme: Flow<ThemeConfig> = context.settingsDataStore.data.map { prefs ->
+    val selectedTheme: Flow<ThemeConfig> = dataStore.data.map { prefs ->
         val id = prefs[selectedThemeKey] ?: ThemePresets.default.id
         (ThemePresets.all + decode(prefs[customThemesKey])).firstOrNull { it.id == id }
             ?: ThemePresets.default
     }
 
     suspend fun setLanguage(language: AppLanguage) {
-        context.settingsDataStore.edit { it[languageKey] = language.tag ?: "" }
+        dataStore.edit { it[languageKey] = language.tag ?: "" }
     }
 
     suspend fun selectTheme(themeId: String) {
-        context.settingsDataStore.edit { it[selectedThemeKey] = themeId }
+        dataStore.edit { it[selectedThemeKey] = themeId }
     }
 
     suspend fun saveCustomTheme(theme: ThemeConfig) {
         val previous = customThemes.first().firstOrNull { it.id == theme.id }
-        context.settingsDataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             val updated = decode(prefs[customThemesKey]).filterNot { it.id == theme.id } + theme
             prefs[customThemesKey] = gson.toJson(updated)
             prefs[selectedThemeKey] = theme.id
@@ -72,7 +68,7 @@ class SettingsRepository @Inject constructor(
 
     suspend fun deleteCustomTheme(themeId: String) {
         val removed = customThemes.first().firstOrNull { it.id == themeId }
-        context.settingsDataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             val updated = decode(prefs[customThemesKey]).filterNot { it.id == themeId }
             prefs[customThemesKey] = gson.toJson(updated)
             if (prefs[selectedThemeKey] == themeId) prefs[selectedThemeKey] = ThemePresets.default.id

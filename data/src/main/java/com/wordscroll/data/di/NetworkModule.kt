@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.InstanceCreator
 import com.wordscroll.core.settings.ThemeConfig
+import com.wordscroll.data.remote.GithubRawApi
 import com.wordscroll.data.remote.PoetryDbApi
 import dagger.Module
 import dagger.Provides
@@ -18,9 +19,19 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
-private val Context.bookmarkDataStore: DataStore<Preferences> by preferencesDataStore(name = "wordscroll_bookmarks")
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class BookmarkDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SettingsDataStore
+
+private val Context.bookmarkDataStoreImpl: DataStore<Preferences> by preferencesDataStore(name = "wordscroll_bookmarks")
+private val Context.settingsDataStoreImpl: DataStore<Preferences> by preferencesDataStore(name = "wordscroll_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -64,7 +75,26 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideGithubRawApi(okHttpClient: OkHttpClient, gson: Gson): GithubRawApi {
+        return Retrofit.Builder()
+            .baseUrl(GithubRawApi.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(GithubRawApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @BookmarkDataStore
     fun provideBookmarkDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return context.bookmarkDataStore
+        return context.bookmarkDataStoreImpl
+    }
+
+    @Provides
+    @Singleton
+    @SettingsDataStore
+    fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.settingsDataStoreImpl
     }
 }

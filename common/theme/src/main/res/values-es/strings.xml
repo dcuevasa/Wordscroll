@@ -20,6 +20,14 @@
     <string name="language_english">Inglés</string>
     <string name="language_spanish">Español</string>
 
+    <!-- ajustes: fuentes de poemas -->
+    <string name="poem_sources">Fuentes de poemas</string>
+    <string name="source_repo_hint">usuario/repo</string>
+    <string name="source_branch_hint">main</string>
+    <string name="add_source">Añadir fuente</string>
+    <string name="checking_source">Comprobando…</string>
+    <string name="add_source_error">No se encontró api/poemas.json en ese repositorio. Revisa el usuario/repo y la rama.</string>
+
     <!-- ajustes: tema -->
     <string name="theme">Tema</string>
     <string name="customize">Personalizar</string>

@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,11 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
@@ -33,12 +37,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wordscroll.core.settings.AppFont
 import com.wordscroll.core.settings.AppLanguage
+import com.wordscroll.core.settings.GithubPoemSource
 import com.wordscroll.core.settings.ImageCorner
 import com.wordscroll.core.settings.PoemBackground
 import com.wordscroll.core.settings.ThemeConfig
@@ -143,6 +149,14 @@ fun SettingsScreen(
                     )
                 }
             }
+
+            // ---- Poem sources ----
+            SectionTitle(text = stringResource(id = R.string.poem_sources))
+            PoemSourcesSection(
+                sources = state.poemSources,
+                onAddSource = { owner, repo, branch -> viewModel.addGithubSource(owner, repo, branch) },
+                onRemoveSource = { viewModel.removeGithubSource(it) }
+            )
 
             // ---- Theme presets & custom ----
             SectionTitle(text = stringResource(id = R.string.theme))
@@ -359,6 +373,126 @@ fun SettingsScreen(
                     overflow = TextOverflow.Ellipsis
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun PoemSourcesSection(
+    sources: List<GithubPoemSource>,
+    onAddSource: suspend (owner: String, repo: String, branch: String) -> Boolean,
+    onRemoveSource: (id: String) -> Unit,
+) {
+    val coroutineScope = rememberCoroutineScope()
+    var repoInput by remember { mutableStateOf("") }
+    var branchInput by remember { mutableStateOf("main") }
+    var isChecking by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+        sources.forEach { source ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "${source.owner}/${source.repo}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                if (!source.isDefault) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_cancel),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clickable { onRemoveSource(source.id) }
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OutlinedTextField(
+                value = repoInput,
+                onValueChange = { repoInput = it; showError = false },
+                singleLine = true,
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.source_repo_hint),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                modifier = Modifier.weight(1f)
+            )
+            OutlinedTextField(
+                value = branchInput,
+                onValueChange = { branchInput = it },
+                singleLine = true,
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.source_branch_hint),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                modifier = Modifier.width(96.dp)
+            )
+        }
+
+        Button(
+            enabled = !isChecking,
+            onClick = {
+                val cleaned = repoInput.trim()
+                    .removePrefix("https://github.com/")
+                    .removePrefix("http://github.com/")
+                    .trim('/')
+                val parts = cleaned.split("/")
+                if (parts.size != 2 || parts[0].isBlank() || parts[1].isBlank()) {
+                    showError = true
+                    return@Button
+                }
+                isChecking = true
+                coroutineScope.launch {
+                    val success = onAddSource(parts[0], parts[1], branchInput.trim().ifBlank { "main" })
+                    isChecking = false
+                    showError = !success
+                    if (success) repoInput = ""
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+        ) {
+            Text(
+                text = stringResource(id = if (isChecking) R.string.checking_source else R.string.add_source),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        if (showError) {
+            Text(
+                text = stringResource(id = R.string.add_source_error),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
     }
 }

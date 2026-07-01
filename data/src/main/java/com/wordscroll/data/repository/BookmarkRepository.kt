@@ -6,13 +6,14 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.wordscroll.data.di.BookmarkDataStore
 import com.wordscroll.data.model.PoemModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class BookmarkRepository @Inject constructor(
-    private val dataStore: DataStore<Preferences>,
+    @BookmarkDataStore private val dataStore: DataStore<Preferences>,
     private val gson: Gson
 ) {
     private val bookmarksKey = stringPreferencesKey("bookmarked_poems")
