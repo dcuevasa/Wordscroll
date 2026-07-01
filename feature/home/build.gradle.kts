@@ -9,5 +9,4 @@ dependencies {
     DOMAIN
     DATA
     CORE
-    media3Dependency()
 }

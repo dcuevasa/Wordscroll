@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.puskal.tiktokcompose"
+    namespace = "com.wordscroll"
     compileSdk = AppConfig.compileSdk
 
     defaultConfig {
-        applicationId = "com.puskal.tiktokcompose"
+        applicationId = "com.wordscroll"
         minSdk = AppConfig.minSdk
         targetSdk = AppConfig.targetSdk
         versionCode = AppConfig.versionCode

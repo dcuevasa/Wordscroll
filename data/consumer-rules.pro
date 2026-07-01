@@ -1,1 +1,1 @@
--keep public class com.puskal.data.model.** {*;}
+-keep public class com.wordscroll.data.model.** {*;}

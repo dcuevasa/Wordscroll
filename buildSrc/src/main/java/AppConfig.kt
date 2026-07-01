@@ -1,6 +1,3 @@
-/**
- * Created by Puskal Khadka on 3/14/2023.
- */
 object AppConfig {
     const val minSdk = 21
     const val targetSdk = 33
