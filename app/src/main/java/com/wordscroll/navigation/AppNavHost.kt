@@ -8,6 +8,7 @@ import com.wordscroll.core.DestinationRoute.HOME_SCREEN_ROUTE
 import com.wordscroll.creatorprofile.poetProfileNavGraph
 import com.wordscroll.home.homeNavGraph
 import com.wordscroll.home.saved.savedNavGraph
+import com.wordscroll.home.settings.settingsNavGraph
 
 @Composable
 fun AppNavHost(
@@ -22,6 +23,7 @@ fun AppNavHost(
     ) {
         homeNavGraph(navController)
         savedNavGraph(navController)
+        settingsNavGraph()
         poetProfileNavGraph(navController)
     }
 }

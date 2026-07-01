@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wordscroll.theme.R
 
@@ -24,14 +25,19 @@ fun TopBar(
     CenterAlignedTopAppBar(
         title = {
             title?.let {
-                Text(text = title, style = MaterialTheme.typography.headlineMedium)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         },
         navigationIcon = {
             navIcon?.let {
                 Icon(painter = painterResource(id = navIcon),
                     contentDescription = null,
-                    tint = Color.Unspecified,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .clickable { onClickNavIcon() })

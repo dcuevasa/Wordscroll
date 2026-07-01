@@ -13,7 +13,9 @@ object IntentUtils {
             setType(type)
             putExtra(Intent.EXTRA_TEXT, text)
         }
-        val chooserIntent = Intent.createChooser(intent, title)
+        val chooserIntent = Intent.createChooser(intent, title).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         startActivity(chooserIntent)
     }
 }

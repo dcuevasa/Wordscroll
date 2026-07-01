@@ -4,5 +4,5 @@ plugins {
 
 
 dependencies {
-
+    CORE
 }

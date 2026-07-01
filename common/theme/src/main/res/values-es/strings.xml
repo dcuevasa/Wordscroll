@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">Wordscroll</string>
+
+    <string name="home">Inicio</string>
+    <string name="saved">Guardados</string>
+    <string name="settings">Ajustes</string>
+
+    <string name="explore_tab">Poetas</string>
+    <string name="feed_tab">Poemas</string>
+
+    <string name="no_saved_poems">Aún no has guardado ningún poema</string>
+    <string name="no_poets_found">No se encontraron poetas</string>
+    <string name="poem_count">%d poemas</string>
+    <string name="search_poets">Buscar poeta</string>
+    <string name="poems_load_error">No se pudieron cargar los poemas. Revisa tu conexión.</string>
+
+    <!-- ajustes: idioma -->
+    <string name="language">Idioma</string>
+    <string name="language_system">Sistema</string>
+    <string name="language_english">Inglés</string>
+    <string name="language_spanish">Español</string>
+
+    <!-- ajustes: tema -->
+    <string name="theme">Tema</string>
+    <string name="customize">Personalizar</string>
+    <string name="font">Fuente</string>
+    <string name="font_default">Predeterminada</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_sans">Sans</string>
+    <string name="font_mono">Mono</string>
+    <string name="font_casual">Casual</string>
+    <string name="font_condensed">Condensada</string>
+    <string name="font_light">Ligera</string>
+    <string name="font_black">Extra negrita</string>
+    <string name="background">Fondo</string>
+    <string name="background_none">Sólido</string>
+    <string name="background_paper">Papel</string>
+    <string name="background_papyrus">Papiro</string>
+    <string name="background_blueprint">Plano</string>
+    <string name="background_custom_image">Imagen personalizada</string>
+    <string name="upload_image">Subir imagen</string>
+    <string name="change_image">Cambiar imagen</string>
+    <string name="companion_image">Imagen acompañante</string>
+    <string name="corner_none">Ninguna</string>
+    <string name="corner_top_start">Arriba izquierda</string>
+    <string name="corner_top_end">Arriba derecha</string>
+    <string name="corner_bottom_start">Abajo izquierda</string>
+    <string name="corner_bottom_end">Abajo derecha</string>
+    <string name="poem_text_color">Color del texto del poema</string>
+    <string name="use_separate_ui_text_color">Usar un color distinto para el texto de la app</string>
+    <string name="app_text_color">Color del texto de la app</string>
+    <string name="background_color">Color del fondo</string>
+    <string name="accent_color">Color de acento</string>
+    <string name="ui_font_size">Tamaño del texto de la app</string>
+    <string name="poem_font_size">Tamaño del texto del poema</string>
+    <string name="italic">Cursiva</string>
+    <string name="underline">Subrayado</string>
+    <string name="strikethrough">Tachado</string>
+    <string name="theme_name_hint">Nombre del tema</string>
+    <string name="save_theme">Guardar tema</string>
+    <string name="custom_theme_default">Mi tema</string>
+    <string name="preview_title">Vista previa</string>
+    <string name="preview_sample">El veloz murciélago hindú comía feliz cardillo y kiwi.</string>
+
+    <!-- nombres de temas predefinidos -->
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_sepia">Sepia</string>
+    <string name="theme_paper">Papel</string>
+    <string name="theme_papyrus">Papiro</string>
+    <string name="theme_code">Resaltado</string>
+    <string name="theme_terminal">Terminal</string>
+    <string name="theme_blueprint">Plano</string>
+    <string name="theme_comic">Cómic</string>
+</resources>

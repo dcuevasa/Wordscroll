@@ -5,4 +5,5 @@ plugins {
 
 dependencies {
     DATA
+    CORE
 }

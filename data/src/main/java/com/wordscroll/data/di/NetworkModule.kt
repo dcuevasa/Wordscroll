@@ -5,6 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.InstanceCreator
+import com.wordscroll.core.settings.ThemeConfig
 import com.wordscroll.data.remote.PoetryDbApi
 import dagger.Module
 import dagger.Provides
@@ -25,7 +28,19 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideGson(): Gson = Gson()
+    fun provideGson(): Gson = GsonBuilder()
+        // Gson normally allocates Kotlin data classes via unsafe reflection,
+        // skipping the constructor entirely — any field missing from an
+        // older saved JSON (e.g. a field added in a later app version) comes
+        // back as a raw zero/null instead of its declared Kotlin default.
+        // Seeding the instance through the real constructor first means only
+        // fields actually present in the JSON get overwritten; everything
+        // else keeps its proper default.
+        .registerTypeAdapter(
+            ThemeConfig::class.java,
+            InstanceCreator<ThemeConfig> { ThemeConfig(id = "", name = "") }
+        )
+        .create()
 
     @Provides
     @Singleton

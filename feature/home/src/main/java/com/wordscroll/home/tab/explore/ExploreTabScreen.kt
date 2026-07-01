@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -90,7 +91,12 @@ fun ExploreTabScreen(
             }
             filtered.isEmpty() -> {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = stringResource(id = R.string.no_poets_found), color = SubTextColor)
+                    Text(
+                        text = stringResource(id = R.string.no_poets_found),
+                        color = SubTextColor,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
                 }
             }
             else -> {

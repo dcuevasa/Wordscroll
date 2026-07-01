@@ -24,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -110,13 +112,22 @@ private fun PoetHeader(name: String?, poemCount: Int?) {
             Text(text = initials, color = Color.White, style = MaterialTheme.typography.headlineMedium)
         }
         12.dp.Space()
-        Text(text = name.orEmpty(), style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = name.orEmpty(),
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        )
         if (poemCount != null) {
             4.dp.Space()
             Text(
                 text = stringResource(id = R.string.poem_count, poemCount),
                 style = MaterialTheme.typography.bodySmall,
-                color = SubTextColor
+                color = SubTextColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

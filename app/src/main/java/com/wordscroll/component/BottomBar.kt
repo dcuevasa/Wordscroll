@@ -5,9 +5,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -50,7 +50,8 @@ fun RowScope.BottomItem(
                 modifier = Modifier.offset(y = BottomBarItemVerticalOffset.times(1.85f)),
                 text = stringResource(id = screen.title),
                 style = MaterialTheme.typography.labelSmall,
-                softWrap = false,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isCurrentBottomItemSelected) 1f else 0.7f)
             )
         },
@@ -61,10 +62,8 @@ fun RowScope.BottomItem(
                 modifier = Modifier
                     .padding(bottom = 9.dp)
                     .size(22.dp),
-                tint = if (screen == BottomBarDestination.SAVED) {
-                    if (isCurrentBottomItemSelected) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                } else Color.Unspecified,
+                tint = if (isCurrentBottomItemSelected) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
             )
         },
         colors = NavigationBarItemDefaults.colors(
